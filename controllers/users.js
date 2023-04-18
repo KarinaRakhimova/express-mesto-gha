@@ -1,27 +1,28 @@
 const User = require('../models/user');
+const checkErrors = require('../utils');
 
 // возвращает всех пользователей
 const getAllUsers = (req, res) => {
   User.find({})
-    .then((data) => res.send(data));
+    .then((users) => res.send({ users }))
+    .catch((err) => checkErrors(err, res));
 };
 
 // возвращает пользователя по _id
 const getUser = (req, res) => {
-  console.log(req.params, 'getUser req.params');
   User.findById(req.params.userId)
     .then((user) => res.send(user))
-    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
+  // .catch((err) => res.status(404).send({ message: 'Пользователь не найден' }));
+    .catch((err) => checkErrors(err, res));
+  //  res.status(err.code).send({ message: err.name });
 };
 
 // создаёт пользователя
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.send(user))
-    .catch((err) => {
-      res.status(500).send({ message: 'Произошла ошибка' });
-    });
+    .then((user) => res.status(201).send(user))
+    .catch((err) => res.status(500).send({ message: err.message }));
 };
 
 // обновляет профиль

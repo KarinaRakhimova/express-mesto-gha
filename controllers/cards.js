@@ -1,17 +1,16 @@
 const Card = require('../models/card');
 
-const ERROR_CODE = 400;
 // возвращает все карточки
 const getCards = (req, res) => {
   Card.find({})
+    .populate('owner')
     .then((data) => res.send(data))
-    .catch((err) => {
-      if (err.name === 'wrongData') return res.status(ERROR_CODE).send({ message: 'Переданы некорректные данные' });
-    });
+    .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };
 // создаёт карточку
 const createCard = (req, res) => {
-  Card.create({ name: req.body.name, link: req.body.link, owner: req.user._id })
+  const { name, link } = req.body;
+  Card.create({ name, link, owner: req.user._id })
     .then((card) => res.send(card))
     .catch((err) => res.status(500).send({ message: 'Произошла ошибка' }));
 };

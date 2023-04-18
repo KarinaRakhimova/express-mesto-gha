@@ -13,9 +13,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', (req, res, next) => {
   req.user = {
-    _id: '643ac61315d5147a5f0e9440', // вставьте сюда _id созданного в предыдущем пункте пользователя
+    _id: '643ea01de2d8108f2c98c457', // вставьте сюда _id созданного в предыдущем пункте пользователя
   };
-  console.log(req.user._id);
   next();
 });
 app.use('/users', userRouter);
