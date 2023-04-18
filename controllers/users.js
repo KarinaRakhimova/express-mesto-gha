@@ -11,7 +11,7 @@ const getAllUsers = (req, res) => {
 // возвращает пользователя по _id
 const getUser = (req, res) => {
   User.findById(req.params.userId)
-    .then((user) => res.send(user))
+    .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
 };
 
@@ -19,7 +19,7 @@ const getUser = (req, res) => {
 const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
-    .then((user) => res.status(201).send(user))
+    .then((user) => res.status(201).send({ user }))
     .catch((err) => checkErrors(err, res));
 };
 
@@ -31,7 +31,7 @@ const updateUser = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
     upsert: true, // если пользователь не найден, он будет создан
   })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
 };
 // обновляет аватар
@@ -42,7 +42,7 @@ const updateAvatar = (req, res) => {
     runValidators: true, // данные будут валидированы перед изменением
     upsert: true, // если пользователь не найден, он будет создан
   })
-    .then((user) => res.send({ data: user }))
+    .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
 };
 module.exports = {
