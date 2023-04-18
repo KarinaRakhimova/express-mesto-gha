@@ -22,7 +22,7 @@ const createUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.create({ name, about, avatar })
     .then((user) => res.status(201).send(user))
-    .catch((err) => res.status(500).send({ message: err.message }));
+    .catch((err) => checkErrors(err, res));
 };
 
 // обновляет профиль
@@ -34,7 +34,7 @@ const updateUser = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Данные не прошли валидацию.' }));
+    .catch((err) => checkErrors(err, res));
 };
 // обновляет аватар
 const updateAvatar = (req, res) => {
@@ -45,7 +45,7 @@ const updateAvatar = (req, res) => {
     upsert: true, // если пользователь не найден, он будет создан
   })
     .then((user) => res.send({ data: user }))
-    .catch((err) => res.status(500).send({ message: 'Данные не прошли валидацию.' }));
+    .catch((err) => checkErrors(err, res));
 };
 module.exports = {
   getAllUsers,
