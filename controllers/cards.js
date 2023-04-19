@@ -3,7 +3,7 @@ const checkErrors = require('../utils/utils');
 // возвращает все карточки
 const getCards = (req, res) => {
   Card.find({})
-    .populate('owner')
+    .populate(['owner', 'likes'])
     .then((cards) => res.send({ cards }))
     .catch((err) => checkErrors(err, res));
 };

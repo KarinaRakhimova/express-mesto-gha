@@ -7,9 +7,6 @@ const { NOTFOUND_ERROR_CODE } = require('./utils/constants');
 const { PORT = 3000 } = process.env;
 const app = express();
 
-app.listen(PORT, () => {
-  console.log(`App listening on port ${PORT}`);
-});
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use('/', (req, res, next) => {
@@ -26,4 +23,8 @@ app.all('*', (req, res) => {
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   dbName: 'mestodb',
+});
+
+app.listen(PORT, () => {
+  console.log(`App listening on port ${PORT}`);
 });
