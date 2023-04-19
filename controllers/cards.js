@@ -56,6 +56,7 @@ const dislikeCard = (req, res) => {
     .then((card) => res.send({ card }))
     .catch((err) => checkErrors(err, res));
 };
+
 module.exports = {
   getCards, createCard, deleteCard, likeCard, dislikeCard,
 };

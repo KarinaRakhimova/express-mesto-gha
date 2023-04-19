@@ -2,7 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
-// const checkErrors = require('./utils');
+const { NOTFOUND_ERROR_CODE } = require('./utils/constants');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -21,7 +21,7 @@ app.use('/', (req, res, next) => {
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
 app.all('*', (req, res) => {
-  res.status(404).send({ message: 'Указан неверный путь' });
+  res.status(NOTFOUND_ERROR_CODE).send({ message: 'Страница не найдена' });
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
