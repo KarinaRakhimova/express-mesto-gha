@@ -1,16 +1,21 @@
 const User = require('../models/user');
-const checkErrors = require('../utils');
+const checkErrors = require('../utils/utils');
 
 // возвращает всех пользователей
 const getAllUsers = (req, res) => {
   User.find({})
-    .then((users) => res.send({ users }))
+    .then((users) => res.send(users))
     .catch((err) => checkErrors(err, res));
 };
 
 // возвращает пользователя по _id
 const getUser = (req, res) => {
   User.findById(req.params.userId)
+    .orFail(() => {
+      const err = new Error('Пользователь не найден');
+      err.name = 'NotFoundError';
+      throw err;
+    })
     .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
 };
@@ -45,6 +50,7 @@ const updateAvatar = (req, res) => {
     .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
 };
+
 module.exports = {
   getAllUsers,
   getUser,

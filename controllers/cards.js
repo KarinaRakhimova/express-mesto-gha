@@ -1,10 +1,10 @@
 const Card = require('../models/card');
-const checkErrors = require('../utils');
+const checkErrors = require('../utils/utils');
 // возвращает все карточки
 const getCards = (req, res) => {
   Card.find({})
     .populate('owner')
-    .then((data) => res.send({ data }))
+    .then((cards) => res.send({ cards }))
     .catch((err) => checkErrors(err, res));
 };
 // создаёт карточку
@@ -17,7 +17,13 @@ const createCard = (req, res) => {
 // удаляет карточку по идентификатору
 const deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
+    .orFail(() => {
+      const err = new Error('Карточка не найдена');
+      err.name = 'NotFoundError';
+      throw err;
+    })
     .then((card) => res.send({ card }))
+    // .catch((err) => checkErrors(err, res));
     .catch((err) => checkErrors(err, res));
 };
 
@@ -27,6 +33,11 @@ const likeCard = (req, res) => {
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
     { new: true },
   )
+    .orFail(() => {
+      const err = new Error('Карточка не найдена');
+      err.name = 'NotFoundError';
+      throw err;
+    })
     .then((card) => res.send({ card }))
     .catch((err) => checkErrors(err, res));
 };
@@ -37,6 +48,11 @@ const dislikeCard = (req, res) => {
     { $pull: { likes: req.user._id } }, // убрать _id из массива
     { new: true },
   )
+    .orFail(() => {
+      const err = new Error('Карточка не найдена');
+      err.name = 'NotFoundError';
+      throw err;
+    })
     .then((card) => res.send({ card }))
     .catch((err) => checkErrors(err, res));
 };

@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const userRouter = require('./routes/users');
 const cardsRouter = require('./routes/cards');
+// const checkErrors = require('./utils');
 
 const { PORT = 3000 } = process.env;
 const app = express();
@@ -19,6 +20,9 @@ app.use('/', (req, res, next) => {
 });
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
+app.all('*', (req, res) => {
+  res.status(404).send({ message: 'Указан неверный путь' });
+});
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
   dbName: 'mestodb',
