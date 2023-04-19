@@ -23,14 +23,13 @@ const deleteCard = (req, res) => {
       throw err;
     })
     .then((card) => res.send({ card }))
-    // .catch((err) => checkErrors(err, res));
     .catch((err) => checkErrors(err, res));
 };
 
 const likeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
+    { $addToSet: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {
@@ -45,7 +44,7 @@ const likeCard = (req, res) => {
 const dislikeCard = (req, res) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
-    { $pull: { likes: req.user._id } }, // убрать _id из массива
+    { $pull: { likes: req.user._id } },
     { new: true },
   )
     .orFail(() => {

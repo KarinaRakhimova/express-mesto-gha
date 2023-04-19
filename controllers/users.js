@@ -32,9 +32,9 @@ const createUser = (req, res) => {
 const updateUser = (req, res) => {
   const { name, about, avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about, avatar }, {
-    new: true, // обработчик then получит на вход обновлённую запись
-    runValidators: true, // данные будут валидированы перед изменением
-    upsert: true, // если пользователь не найден, он будет создан
+    new: true,
+    runValidators: true,
+    upsert: true,
   })
     .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
@@ -43,9 +43,9 @@ const updateUser = (req, res) => {
 const updateAvatar = (req, res) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
-    new: true, // обработчик then получит на вход обновлённую запись
-    runValidators: true, // данные будут валидированы перед изменением
-    upsert: true, // если пользователь не найден, он будет создан
+    new: true,
+    runValidators: true,
+    upsert: true,
   })
     .then((user) => res.send({ user }))
     .catch((err) => checkErrors(err, res));
