@@ -9,10 +9,10 @@ const login = (req, res) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, '88cae81194b55ef1ac10eeba0fd01e4fed0561d0a2fc4d1c863b32eda8bd273f', { expiresIn: '7d' });
       res.cookie('token', token, {
-        maxAge: 3600000,
+        maxAge: 3600000 * 24 * 7,
         httpOnly: true,
         sameSite: true,
-      });
+      }).send(req.cookies);
     })
     .catch((err) => res.status(401).send({ message: err.message }));
 };
@@ -26,22 +26,28 @@ const getAllUsers = (req, res) => {
 
 // возвращает пользователя по _id
 const getUser = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
-    // .orFail(() => {
-    //   const err = new Error('Пользователь не найден');
-    //   err.name = 'NotFoundError';
-    //   throw err;
-    // })
-    .then((user) => res.send({ user }))
-    .catch((err) => checkErrors(err, res));
+  User.findById(req.user._id)
+  .then((user) => res.send({user}));
+  // const {token} = req.cookies.token;
+  // console.log('req=>', req.user);
+  // if (!token) {
+  //   return res.status(401).send({message: '3Необходима авторизация'})
+  // } res.send(req.user)
+
+  // const { email, password } = req.body;
+  // return User.findUserByCredentials(email, password)
+  //   // .orFail(() => {
+  //   //   const err = new Error('Пользователь не найден');
+  //   //   err.name = 'NotFoundError';
+  //   //   throw err;
+  //   // })
+  //   .then((user) => res.send({ user }))
+  //   .catch((err) => checkErrors(err, res));
 };
 
 // создаёт пользователя
-const createUser = (req, res) => {
-  const {
-    email, password, name, about, avatar,
-  } = req.body;
+const register = (req, res) => {
+  const { email, password, name, about, avatar } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       email,
@@ -88,7 +94,7 @@ const updateAvatar = (req, res) => {
 module.exports = {
   getAllUsers,
   getUser,
-  createUser,
+  register,
   updateUser,
   updateAvatar,
   login,
