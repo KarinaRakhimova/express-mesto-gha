@@ -1,11 +1,17 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
+const validator = require('validator');
+const UnauthorizedError = require('../errors/unauthorizedError');
 
 const userSchema = new mongoose.Schema({
   email: {
     type: String,
-    required: [true, 'Не заполнено поле email'],
-    unique: [true, 'Данный email уже зарегистрирован'],
+    required: true,
+    unique: true,
+    validate: {
+      validator: (email) => validator.isEmail(email),
+      message: 'Email указан некорректно',
+    },
   },
   password: {
     type: String,
@@ -28,23 +34,32 @@ const userSchema = new mongoose.Schema({
   avatar: {
     type: String,
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
-    validate: /https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/,
+    validate: {
+      validator(avatar) {
+        return /https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/.test(avatar);
+      },
+      message: 'Неверный формат ссылки',
+    },
   },
 });
 
 userSchema.statics.findUserByCredentials = function (email, password) {
-  return this.findOne({ email }).select('+password')
+  return this.findOne({ email })
+    .select('+password')
     .then((user) => {
       if (!user) {
-        return Promise.reject(new Error('Неправильные почта или пароль'));
+        throw new UnauthorizedError(
+          'findUserByCredentials => 1UnauthorizedError => Неправильные почта или пароль',
+        );
       }
-      return bcrypt.compare(password, user.password)
-        .then((matched) => {
-          if (!matched) {
-            return Promise.reject(new Error('Неправильные почта или пароль'));
-          }
-          return user;
-        });
+      return bcrypt.compare(password, user.password).then((matched) => {
+        if (!matched) {
+          throw new UnauthorizedError(
+            'findUserByCredentials => 2UnauthorizedError => Неправильные почта или пароль',
+          );
+        }
+        return user;
+      });
     });
 };
 module.exports = mongoose.model('user', userSchema);

@@ -7,12 +7,12 @@ const {
 
 function checkErrors(err, res) {
   if (err.name === 'ValidationError') {
-    return res.status(CAST_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+    return res.status(CAST_ERROR_CODE).send({ message: '1Переданы некорректные данные' });
   } if (err.name === 'NotFoundError') {
     return res.status(NOTFOUND_ERROR_CODE).send({ message: err.message });
   }
   if (err.name === 'CastError') {
-    return res.status(CAST_ERROR_CODE).send({ message: 'Переданы некорректные данные' });
+    return res.status(CAST_ERROR_CODE).send({ message: '2Переданы некорректные данные' });
   } if (err.code === 11000) {
     return res.status(DUPLICATE_ERROR_CODE).send('Пользователь с данным email уже зарегистрирвоан');
   }

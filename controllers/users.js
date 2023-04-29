@@ -1,53 +1,12 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const checkErrors = require('../utils/utils');
 
-const login = (req, res) => {
-  const { email, password } = req.body;
-  return User.findUserByCredentials(email, password)
-    .then((user) => {
-      const token = jwt.sign({ _id: user._id }, '88cae81194b55ef1ac10eeba0fd01e4fed0561d0a2fc4d1c863b32eda8bd273f', { expiresIn: '7d' });
-      res.cookie('token', token, {
-        maxAge: 3600000 * 24 * 7,
-        httpOnly: true,
-        sameSite: true,
-      }).send(req.cookies);
-    })
-    .catch((err) => res.status(401).send({ message: err.message }));
-};
-
-// возвращает всех пользователей
-const getAllUsers = (req, res) => {
-  User.find({})
-    .then((users) => res.send(users))
-    .catch((err) => checkErrors(err, res));
-};
-
-// возвращает пользователя по _id
-const getUser = (req, res) => {
-  User.findById(req.user._id)
-  .then((user) => res.send({user}));
-  // const {token} = req.cookies.token;
-  // console.log('req=>', req.user);
-  // if (!token) {
-  //   return res.status(401).send({message: '3Необходима авторизация'})
-  // } res.send(req.user)
-
-  // const { email, password } = req.body;
-  // return User.findUserByCredentials(email, password)
-  //   // .orFail(() => {
-  //   //   const err = new Error('Пользователь не найден');
-  //   //   err.name = 'NotFoundError';
-  //   //   throw err;
-  //   // })
-  //   .then((user) => res.send({ user }))
-  //   .catch((err) => checkErrors(err, res));
-};
-
-// создаёт пользователя
-const register = (req, res) => {
-  const { email, password, name, about, avatar } = req.body;
+// регистрация
+const register = (req, res, next) => {
+  const {
+    email, password, name, about, avatar,
+  } = req.body;
   bcrypt.hash(password, 10)
     .then((hash) => User.create({
       email,
@@ -57,38 +16,60 @@ const register = (req, res) => {
       avatar,
     }))
     .then((user) => res.status(201).send({ user }))
-    .catch((err) => checkErrors(err, res));
+    .catch(next);
+};
+// авторизация
+const login = (req, res, next) => {
+  const { email, password } = req.body;
+  return User.findUserByCredentials(email, password)
+    .then((user) => {
+      const token = jwt.sign({ _id: user._id }, '88cae81194b55ef1ac10eeba0fd01e4fed0561d0a2fc4d1c863b32eda8bd273f', { expiresIn: '7d' });
+      res.cookie('token', token, {
+        maxAge: 3600000 * 24 * 7,
+        httpOnly: true,
+        sameSite: true,
+      })
+        .send(req.cookies)
+        .end();
+    })
+    .catch(next);
+};
+
+// возвращает всех пользователей
+const getAllUsers = (req, res, next) => {
+  User.find({})
+    .then((users) => res.send(users))
+    .catch(next);
+};
+
+// возвращает пользователя по _id
+const getUser = (req, res, next) => {
+  User.findById(req.user._id)
+    .then((user) => res.send({ user }))
+    .catch(next);
 };
 
 // обновляет профиль
-const updateUser = (req, res) => {
+const updateUser = (req, res, next) => {
   const { name, about, avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about, avatar }, {
     new: true,
     runValidators: true,
   })
-    .orFail(() => {
-      const err = new Error('Пользователь не найден');
-      err.name = 'NotFoundError';
-      throw err;
-    })
+    .orFail()
     .then((user) => res.send({ user }))
-    .catch((err) => checkErrors(err, res));
+    .catch(next);
 };
 // обновляет аватар
-const updateAvatar = (req, res) => {
+const updateAvatar = (req, res, next) => {
   const { avatar } = req.body;
   User.findByIdAndUpdate(req.user._id, { avatar }, {
     new: true,
     runValidators: true,
   })
-    .orFail(() => {
-      const err = new Error('Пользователь не найден');
-      err.name = 'NotFoundError';
-      throw err;
-    })
+    .orFail()
     .then((user) => res.send({ user }))
-    .catch((err) => checkErrors(err, res));
+    .catch(next);
 };
 
 module.exports = {
