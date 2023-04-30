@@ -6,6 +6,7 @@ const {
   DEFAULT_ERROR_CODE,
   DUPLICATE_ERROR_CODE,
 } = require('../utils/constants');
+const ForbiddenError = require('../errors/forbiddenError');
 
 const errorHandler = (err, req, res, next) => {
   if (err instanceof BadRequestError) {
@@ -17,11 +18,14 @@ const errorHandler = (err, req, res, next) => {
   } if (err instanceof NotFoundError) {
     res.status(err.statusCode).send({ message: err.message });
     return;
+  } if (err instanceof ForbiddenError) {
+    res.status(err.statusCode).send({ message: err.message });
+    return;
   } if (err.code === 11000) {
     res.status(DUPLICATE_ERROR_CODE).send({ message: 'Пользователь с данным email уже зарегистрирвоан' });
     return;
   }
-  res.status(DEFAULT_ERROR_CODE).send(err);
+  res.status(DEFAULT_ERROR_CODE).send({ message: err.message });
   next();
 };
 

@@ -41,6 +41,13 @@ const userSchema = new mongoose.Schema({
       message: 'Неверный формат ссылки',
     },
   },
+}, {
+  toJSON: {
+    useProjection: true,
+  },
+  toObject: {
+    useProjection: true,
+  },
 });
 
 userSchema.statics.findUserByCredentials = function (email, password) {
