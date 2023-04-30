@@ -2,6 +2,7 @@ const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
 const NotFoundError = require('../errors/NotFoundError');
+
 // регистрация
 const register = (req, res, next) => {
   const {
@@ -18,6 +19,7 @@ const register = (req, res, next) => {
     .then((user) => res.status(201).send({ user }))
     .catch(next);
 };
+
 // авторизация
 const login = (req, res, next) => {
   const { email, password } = req.body;
@@ -42,13 +44,20 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
+// возвращает информацию о текущем пользователе
+const getCurrentUser = (req, res, next) => {
+  User.findOne({ _id: req.user._id })
+    .then((user) => res.send(user))
+    .catch(next);
+};
+
 // возвращает пользователя по _id
-const getUser = (req, res, next) => {
+const getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .orFail(() => {
       throw new NotFoundError('Пользователь не найден');
     })
-    .then((user) => res.send({ user }))
+    .then((user) => res.send(user))
     .catch(next);
 };
 
@@ -59,10 +68,10 @@ const updateUser = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() => {
-      throw new NotFoundError('Пользователь не найден');
-    })
-    .then((user) => res.send({ user }))
+    // .orFail(() => {
+    //   throw new NotFoundError('Пользователь не найден');
+    // })
+    .then((user) => res.send(user))
     .catch(next);
 };
 // обновляет аватар
@@ -72,18 +81,19 @@ const updateAvatar = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail(() => {
-      throw new NotFoundError('Пользователь не найден');
-    })
+    // .orFail(() => {
+    //   throw new NotFoundError('Пользователь не найден');
+    // })
     .then((user) => res.send({ user }))
     .catch(next);
 };
 
 module.exports = {
-  getAllUsers,
-  getUser,
   register,
+  login,
+  getAllUsers,
+  getCurrentUser,
+  getUserById,
   updateUser,
   updateAvatar,
-  login,
 };
