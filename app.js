@@ -4,7 +4,7 @@ const { errors } = require('celebrate');
 const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
-const NotFoundError = require('./errors/NotFoundError');
+const NotFoundError = require('./errors/notFoundError');
 
 const { PORT = 3000 } = process.env;
 const app = express();

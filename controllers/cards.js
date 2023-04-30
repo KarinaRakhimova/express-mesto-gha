@@ -1,4 +1,4 @@
-const NotFoundError = require('../errors/NotFoundError');
+const NotFoundError = require('../errors/notFoundError');
 const Card = require('../models/card');
 
 // возвращает все карточки
