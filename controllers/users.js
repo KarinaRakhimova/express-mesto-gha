@@ -1,7 +1,7 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
+const NotFoundError = require('../errors/NotFoundError');
 // регистрация
 const register = (req, res, next) => {
   const {
@@ -44,7 +44,10 @@ const getAllUsers = (req, res, next) => {
 
 // возвращает пользователя по _id
 const getUser = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.userId)
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => res.send({ user }))
     .catch(next);
 };
@@ -56,7 +59,9 @@ const updateUser = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail()
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => res.send({ user }))
     .catch(next);
 };
@@ -67,7 +72,9 @@ const updateAvatar = (req, res, next) => {
     new: true,
     runValidators: true,
   })
-    .orFail()
+    .orFail(() => {
+      throw new NotFoundError('Пользователь не найден');
+    })
     .then((user) => res.send({ user }))
     .catch(next);
 };

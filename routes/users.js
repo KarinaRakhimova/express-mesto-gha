@@ -10,12 +10,19 @@ const {
 } = require('../controllers/users');
 
 userRouter.get('/', getAllUsers);
-userRouter.get('/:userId', celebrate({
+
+userRouter.get('/:userId', auth, celebrate({
   params: Joi.object().keys({
-    userId: Joi.string().alphanum().required(),
+    userId: Joi.string().hex().required(),
   }),
 }), getUser);
-userRouter.get('/me', auth, getUser);
+
+userRouter.get('/me', auth, celebrate({
+  params: Joi.object().keys({
+    userId: Joi.string().hex().required(),
+  }),
+}), getUser);
+
 userRouter.patch(
   '/me',
   celebrate({
@@ -25,6 +32,9 @@ userRouter.patch(
       avatar: Joi.string()
         .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
         .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+    }),
+    params: Joi.object().keys({
+      userId: Joi.string().hex().required(),
     }),
   }),
   updateUser,
@@ -37,6 +47,9 @@ userRouter.patch(
       avatar: Joi.string()
         .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
         .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+    }),
+    params: Joi.object().keys({
+      userId: Joi.string().hex().required(),
     }),
   }),
   updateAvatar,
