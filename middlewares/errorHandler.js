@@ -1,6 +1,7 @@
 const BadRequestError = require('../errors/BadRequestError');
 const UnauthorizedError = require('../errors/UnauthorizedError');
 const NotFoundError = require('../errors/NotFoundError');
+
 const {
   DEFAULT_ERROR_CODE,
   DUPLICATE_ERROR_CODE,
