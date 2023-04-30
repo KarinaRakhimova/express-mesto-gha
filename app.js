@@ -1,6 +1,7 @@
 const express = require('express');
 const cookieParser = require('cookie-parser');
-const { errors } = require('celebrate');
+const Joi = require('joi');
+const { celebrate, errors } = require('celebrate');
 const mongoose = require('mongoose');
 const auth = require('./middlewares/auth');
 const userRouter = require('./routes/users');
@@ -15,8 +16,23 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
-app.post('/signin', login);
-app.post('/signup', register);
+app.post('/signin', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+  }),
+}), login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().email().required(),
+    password: Joi.string().min(8).required(),
+    name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
+    about: Joi.string().min(2).max(30).default('Исследователь'),
+    avatar: Joi.string()
+      .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
+      .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+  }),
+}), register);
 app.use(auth);
 app.use('/users', userRouter);
 app.use('/cards', cardsRouter);
