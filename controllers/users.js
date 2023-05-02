@@ -44,6 +44,11 @@ const getAllUsers = (req, res, next) => {
     .then((users) => res.send(users))
     .catch(next);
 };
+
+// статью про декоратоы, которую вы посоветовали (https://learn.javascript.ru/call-apply-decorators) вообще не поняла((,
+// поэтому переделала 2 контроллера в один (и для поиска юзера, и для обновления юзера),
+// если неправильно, буду дальше рефакторить
+
 // поиск пользователя по Id
 const getUserInfo = (req, res, next) => {
   User.findById(req.route.path === '/me' ? req.user._id : req.params.userId)

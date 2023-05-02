@@ -27,7 +27,7 @@ const deleteCard = (req, res, next) => {
       const owner = card.owner._id.toString();
       if (owner !== req.user._id) {
         throw new ForbiddenError('Доступ запрещен');
-      } return Card.deleteOne({ _id: req.params.cardId });
+      } return card.deleteOne({ _id: req.params.cardId });
     })
     .then(() => res.send({ message: 'Карточка успешно удалена' }))
     .catch(next);
