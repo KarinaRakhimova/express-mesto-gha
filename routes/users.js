@@ -1,34 +1,31 @@
 const { celebrate, Joi } = require('celebrate');
 const userRouter = require('express').Router();
-
+const { URL_PATTERN } = require('../utils/constants');
 const {
   getAllUsers,
-  getCurrentUser,
-  getUserById,
-  updateUser,
-  updateAvatar,
+  getUserInfo,
+  updateUserInfo,
 } = require('../controllers/users');
 
 userRouter.get('/', getAllUsers);
-userRouter.get('/me', getCurrentUser);
+userRouter.get('/me', getUserInfo);
 userRouter.get('/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.string().hex().length(24).required(),
   }),
-}), getUserById);
+}), getUserInfo);
 
 userRouter.patch(
   '/me',
   celebrate({
     body: Joi.object().keys({
-      name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
-      about: Joi.string().min(2).max(30).default('Исследователь'),
-      avatar: Joi.string()
-        .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
-        .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+      name: Joi.string().min(2).max(30).default('Жак-Ив Кусто')
+        .required(),
+      about: Joi.string().min(2).max(30).default('Исследователь')
+        .required(),
     }),
   }),
-  updateUser,
+  updateUserInfo,
 );
 
 userRouter.patch(
@@ -36,11 +33,12 @@ userRouter.patch(
   celebrate({
     body: Joi.object().keys({
       avatar: Joi.string()
-        .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
-        .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
+        .pattern(URL_PATTERN)
+        .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png')
+        .required(),
     }),
   }),
-  updateAvatar,
+  updateUserInfo,
 );
 
 module.exports = userRouter;

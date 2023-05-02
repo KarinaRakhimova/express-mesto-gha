@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const { URL_PATTERN } = require('../utils/constants');
 
 const cardSchema = new mongoose.Schema({
   name: {
@@ -12,7 +13,7 @@ const cardSchema = new mongoose.Schema({
     required: [true, 'Не заполнено поле link'],
     validate: {
       validator(link) {
-        return /https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/.test(link);
+        return URL_PATTERN.test(link);
       },
       message: 'Неверный формат ссылки',
     },

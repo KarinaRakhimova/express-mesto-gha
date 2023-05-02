@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const bcrypt = require('bcryptjs');
 const validator = require('validator');
 const UnauthorizedError = require('../errors/unauthorizedError');
+const { URL_PATTERN } = require('../utils/constants');
 
 const userSchema = new mongoose.Schema({
   email: {
@@ -17,7 +18,6 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: [true, 'Не заполнено поле password'],
     select: false,
-    minlength: [8, 'Недостаточное количество символов в поле password'],
   },
   name: {
     type: String,
@@ -36,7 +36,7 @@ const userSchema = new mongoose.Schema({
     default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     validate: {
       validator(avatar) {
-        return /https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/.test(avatar);
+        return URL_PATTERN.test(avatar);
       },
       message: 'Неверный формат ссылки',
     },

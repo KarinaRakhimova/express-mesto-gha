@@ -1,6 +1,7 @@
 const signupRouter = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
 const { register } = require('../controllers/users');
+const { URL_PATTERN } = require('../utils/constants');
 
 signupRouter.post('/', celebrate({
   body: Joi.object().keys({
@@ -9,7 +10,7 @@ signupRouter.post('/', celebrate({
     name: Joi.string().min(2).max(30).default('Жак-Ив Кусто'),
     about: Joi.string().min(2).max(30).default('Исследователь'),
     avatar: Joi.string()
-      .pattern(/https?:\/\/[w{3}\.]?[\w\W]*\.[a-z\W]{2,3}#?/)
+      .pattern(URL_PATTERN)
       .default('https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png'),
   }),
 }), register);
