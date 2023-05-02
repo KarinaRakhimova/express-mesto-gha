@@ -24,16 +24,12 @@ const errorHandler = (err, req, res, next) => {
     res.status(NOTFOUND_ERROR_CODE).send({ message: err.message });
     return;
   }
-  if (err instanceof BadRequestError) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  } if (err instanceof UnauthorizedError) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  } if (err instanceof NotFoundError) {
-    res.status(err.statusCode).send({ message: err.message });
-    return;
-  } if (err instanceof ForbiddenError) {
+  if (
+    err instanceof BadRequestError
+    || err instanceof UnauthorizedError
+    || err instanceof NotFoundError
+    || err instanceof ForbiddenError
+  ) {
     res.status(err.statusCode).send({ message: err.message });
     return;
   } if (err.code === 11000) {
