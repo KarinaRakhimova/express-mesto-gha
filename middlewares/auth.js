@@ -8,7 +8,7 @@ const auth = (req, res, next) => {
   }
   let payload;
   try {
-    payload = jwt.verify(token, '88cae81194b55ef1ac10eeba0fd01e4fed0561d0a2fc4d1c863b32eda8bd273f');
+    payload = jwt.verify(token, 'testeee2@test.ru');
   } catch (err) {
     next(new UnauthorizedError('Необходима авторизация'));
   }
