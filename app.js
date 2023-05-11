@@ -7,13 +7,18 @@ const { errors } = require('celebrate');
 const mongoose = require('mongoose');
 const indexRouter = require('./routes/index');
 const errorHandler = require('./middlewares/errorHandler');
+const cors = require('./middlewares/cors');
+const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const app = express();
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use(cors);
+app.use(requestLogger);
 app.use('/', indexRouter);
+app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb', {
