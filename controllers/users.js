@@ -34,6 +34,7 @@ const login = (req, res, next) => {
       })
         .send({ message: 'Вы авторизованы' })
         .end();
+      console.log('res=>', res.token);
     })
     .catch(next);
 };
