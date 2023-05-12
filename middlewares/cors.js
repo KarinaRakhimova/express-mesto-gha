@@ -1,6 +1,6 @@
 const allowedCors = [
   'mesto2023.nomoredomains.monster',
-  'api.mesto2023.nomoredomains.monster',
+  'api.mesto2023.students.nomoredomains.monster',
   '51.250.64.58',
   'localhost:3000',
   'localhost:3001',
