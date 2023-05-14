@@ -16,7 +16,8 @@ const allowedCors = [
   'http://localhost:3001',
   'https://localhost:3000',
   'https://localhost:3001',
-  'mesto2023.nomoredomains.monster',
+  'http://mesto2023.nomoredomains.monster',
+  'https://mesto2023.nomoredomains.monster',
 ];
 const app = express();
 app.use(cookieParser());
