@@ -18,18 +18,18 @@ const allowedCors = [
 const app = express();
 app.use(cookieParser());
 app.use((req, res, next) => {
-  const { origin } = req.headers;
+  const { host } = req.headers;
   console.log('origin', origin);
   const requestHeaders = req.headers['access-control-request-headers'];
-  console.log(allowedCors.includes(origin));
+  console.log(allowedCors.includes(host));
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', origin);
+    res.header('Access-Control-Allow-Origin', host);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
   }
-  if (allowedCors.includes(origin)) {
-    res.header('Access-Control-Allow-Origin', origin);
+  if (allowedCors.includes(host)) {
+    res.header('Access-Control-Allow-Origin', host);
     res.header('Access-Control-Allow-Credentials', true);
   }
   next();
