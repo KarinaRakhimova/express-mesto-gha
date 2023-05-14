@@ -30,6 +30,7 @@ app.use((req, res, next) => {
   }
 
   if (req.method === 'OPTIONS') {
+    res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
