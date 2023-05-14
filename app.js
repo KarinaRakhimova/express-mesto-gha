@@ -10,24 +10,20 @@ const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const allowedCors = [
-  'https://api.mesto2023.students.nomoredomains.monster',
-  'http://api.mesto2023.students.nomoredomains.monster',
-  'http://localhost:3000',
-  'http://localhost:3001',
-  'https://localhost:3000',
-  'https://localhost:3001',
-  'http://mesto2023.nomoredomains.monster',
-  'https://mesto2023.nomoredomains.monster',
+  'api.mesto2023.students.nomoredomains.monster',
+  'localhost:3000',
+  'localhost:3001',
+  'mesto2023.nomoredomains.monster',
 ];
 const app = express();
 app.use(cookieParser());
 app.use((req, res, next) => {
-
   const { host } = req.headers;
   console.log('origin', host);
   const requestHeaders = req.headers['access-control-request-headers'];
+  console.log(allowedCors.includes(host));
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', 'https://mesto2023.nomoredomains.monster');
+    res.header('Access-Control-Allow-Origin', host);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
