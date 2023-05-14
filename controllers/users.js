@@ -34,11 +34,20 @@ const login = (req, res, next) => {
       })
         .send({ message: 'Вы авторизованы' })
         .end();
-      console.log('res=>', res.token);
     })
     .catch(next);
 };
 
+const signout = (req, res, next) => {
+  res.sendStatus(401)
+    .clearCookie('token', {
+      httpOnly: true,
+      sameSite: true,
+    })
+    .redirect('signin')
+    .end();
+  next();
+};
 // возвращает всех пользователей
 const getAllUsers = (req, res, next) => {
   User.find({})
@@ -46,17 +55,15 @@ const getAllUsers = (req, res, next) => {
     .catch(next);
 };
 
-// статью про декоратоы, которую вы посоветовали (https://learn.javascript.ru/call-apply-decorators) вообще не поняла((,
-// поэтому переделала 2 контроллера в один (и для поиска юзера, и для обновления юзера),
-// если неправильно, буду дальше рефакторить
-
 // поиск пользователя по Id
 const getUserInfo = (req, res, next) => {
   User.findById(req.route.path === '/me' ? req.user._id : req.params.userId)
     .orFail(() => {
       throw new NotFoundError('Пользователь не найден');
     })
-    .then((user) => res.send(user))
+    .then((user) => {
+      res.send(user);
+    })
     .catch(next);
 };
 
@@ -71,32 +78,6 @@ const updateUserInfo = (req, res, next) => {
     .then((user) => res.send(user))
     .catch(next);
 };
-// обновляет профиль
-// const updateUser = (req, res, next) => {
-//   const { name, about, avatar } = req.body;
-//   User.findByIdAndUpdate(req.user._id, { name, about, avatar }, {
-//     new: true,
-//     runValidators: true,
-//   })
-//     .orFail(() => {
-//       throw new NotFoundError('Пользователь не найден');
-//     })
-//     .then((user) => res.send(user))
-//     .catch(next);
-// };
-// // обновляет аватар
-// const updateAvatar = (req, res, next) => {
-//   const { avatar } = req.body;
-//   User.findByIdAndUpdate(req.user._id, { avatar }, {
-//     new: true,
-//     runValidators: true,
-//   })
-//     // .orFail(() => {
-//     //   throw new NotFoundError('Пользователь не найден');
-//     // })
-//     .then((user) => res.send(user))
-//     .catch(next);
-// };
 
 module.exports = {
   register,
@@ -104,4 +85,5 @@ module.exports = {
   getAllUsers,
   getUserInfo,
   updateUserInfo,
+  signout,
 };
