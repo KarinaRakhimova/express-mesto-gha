@@ -11,7 +11,10 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const allowedCors = [
   'http://localhost:3000',
+  'http://localhost:3001',
   'https://localhost:3000',
+  'http://158.160.46.145',
+  'https://158.160.46.145',
 ];
 const app = express();
 app.use(cookieParser());
