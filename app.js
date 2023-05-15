@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 const express = require('express');
 const cookieParser = require('cookie-parser');
 const { errors } = require('celebrate');
@@ -10,26 +10,22 @@ const errorHandler = require('./middlewares/errorHandler');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
 
 const allowedCors = [
-  'api.mesto2023.students.nomoredomains.monster',
-  'localhost:3000',
-  'localhost:3001',
-  'mesto2023.nomoredomains.monster',
+  'http://localhost:3000',
+  'https://localhost:3000',
 ];
 const app = express();
 app.use(cookieParser());
 app.use((req, res, next) => {
-  const { host } = req.headers;
-  console.log('origin', origin);
+  const { origin } = req.headers;
   const requestHeaders = req.headers['access-control-request-headers'];
-  console.log(allowedCors.includes(host));
   if (req.method === 'OPTIONS') {
-    res.header('Access-Control-Allow-Origin', host);
+    res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Methods', 'GET,HEAD,PUT,PATCH,POST,DELETE');
     res.header('Access-Control-Allow-Headers', requestHeaders);
     return res.end();
   }
-  if (allowedCors.includes(host)) {
-    res.header('Access-Control-Allow-Origin', host);
+  if (allowedCors.includes(origin)) {
+    res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Credentials', true);
   }
   next();
