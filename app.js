@@ -13,8 +13,13 @@ const allowedCors = [
   'http://localhost:3000',
   'http://localhost:3001',
   'https://localhost:3000',
+  'https://localhost:3001',
   'http://158.160.46.145',
   'https://158.160.46.145',
+  'https://mesto2023.nomoredomains.monster',
+  'http://mesto2023.nomoredomains.monster',
+  'https://api.mesto2023.students.nomoredomains.monster',
+  'http://api.mesto2023.students.nomoredomains.monster',
 ];
 const app = express();
 app.use(cookieParser());
