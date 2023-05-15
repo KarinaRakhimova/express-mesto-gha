@@ -1,4 +1,4 @@
-const { allowedCors } = require('../utils/constants');
+const { ALLOWED_CORS } = require('../utils/constants');
 
 const cors = (req, res, next) => {
   const { origin } = req.headers;
@@ -10,7 +10,7 @@ const cors = (req, res, next) => {
     res.header('Access-Control-Allow-Credentials', true);
     return res.end();
   }
-  if (allowedCors.includes(origin)) {
+  if (ALLOWED_CORS.includes(origin)) {
     res.header('Access-Control-Allow-Origin', origin);
     res.header('Access-Control-Allow-Credentials', true);
   }
